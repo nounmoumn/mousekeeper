@@ -571,7 +571,9 @@ impl AgentRuntime {
                         Some(url),
                         None,
                         AgentConnectionState::Unconfigured,
-                        Some(unconfigured_error("server pairing is optional; local desktop features remain available")),
+                        Some(unconfigured_error(
+                            "server pairing is optional; local desktop features remain available",
+                        )),
                     ),
                     Err(error) => (
                         Some(url),
@@ -1563,21 +1565,42 @@ impl AgentRuntime {
 
     pub async fn pending_agent_tools(&self) -> Result<Vec<AgentToolRequest>, AgentError> {
         let (base_url, credential) = self.require_authenticated_config()?;
-        let result = self.send_json::<Vec<AgentToolRequest>>(self.http.get(format!(
-            "{base_url}/v1/devices/{}/agent-tools/pending", credential.device_id
-        )).bearer_auth(&credential.device_token)).await;
-        match &result { Ok(_) => self.mark_online(), Err(error) => self.record_error(error.clone(), AgentConnectionState::Offline) }
+        let result = self
+            .send_json::<Vec<AgentToolRequest>>(
+                self.http
+                    .get(format!(
+                        "{base_url}/v1/devices/{}/agent-tools/pending",
+                        credential.device_id
+                    ))
+                    .bearer_auth(&credential.device_token),
+            )
+            .await;
+        match &result {
+            Ok(_) => self.mark_online(),
+            Err(error) => self.record_error(error.clone(), AgentConnectionState::Offline),
+        }
         result
     }
 
-    pub async fn complete_agent_tool(&self, step_id: String, status: &str, result_metadata: Value, failure_code: Option<String>) -> Result<(), AgentError> {
+    pub async fn complete_agent_tool(
+        &self,
+        step_id: String,
+        status: &str,
+        result_metadata: Value,
+        failure_code: Option<String>,
+    ) -> Result<(), AgentError> {
         validate_opaque_value("agent tool step id", &step_id, 200)?;
-        if !matches!(status, "SUCCEEDED" | "FAILED") { return Err(validation_error("invalid agent tool status")); }
+        if !matches!(status, "SUCCEEDED" | "FAILED") {
+            return Err(validation_error("invalid agent tool status"));
+        }
         let (base_url, credential) = self.require_authenticated_config()?;
         let response = self.send_empty(self.http.post(format!("{base_url}/v1/agent/agent-tools/{step_id}/result"))
             .bearer_auth(&credential.device_token)
             .json(&json!({ "status": status, "resultMetadata": result_metadata, "failureCode": failure_code }))).await;
-        match &response { Ok(_) => self.mark_online(), Err(error) => self.record_error(error.clone(), AgentConnectionState::Offline) }
+        match &response {
+            Ok(_) => self.mark_online(),
+            Err(error) => self.record_error(error.clone(), AgentConnectionState::Offline),
+        }
         response
     }
 
@@ -1993,7 +2016,9 @@ impl AgentRuntime {
         let mut state = self.state.lock().expect("agent state mutex poisoned");
         state.credential = None;
         state.state = AgentConnectionState::Unconfigured;
-        state.last_error = Some(unconfigured_error("server pairing is optional; local desktop features remain available"));
+        state.last_error = Some(unconfigured_error(
+            "server pairing is optional; local desktop features remain available",
+        ));
         drop(state);
         Ok(self.connection_status())
     }
@@ -2719,7 +2744,13 @@ fn validate_chat_message(
         || !matches!(response.sender_type.as_str(), "USER" | "ASSISTANT")
         || !matches!(
             response.message_type.as_str(),
-            "TEXT" | "COMMAND_DRAFT" | "RULE_DRAFT" | "QUERY_RESULT" | "EXECUTION_RESULT" | "PROPOSAL" | "DECISION"
+            "TEXT"
+                | "COMMAND_DRAFT"
+                | "RULE_DRAFT"
+                | "QUERY_RESULT"
+                | "EXECUTION_RESULT"
+                | "PROPOSAL"
+                | "DECISION"
         )
         || response.content.chars().count() > 2_000
         || response.created_at.is_empty()
@@ -2868,7 +2899,13 @@ fn validate_chat_quick_history(
         )
         || !matches!(
             response.message_type.as_str(),
-            "TEXT" | "COMMAND_DRAFT" | "RULE_DRAFT" | "QUERY_RESULT" | "EXECUTION_RESULT" | "PROPOSAL" | "DECISION"
+            "TEXT"
+                | "COMMAND_DRAFT"
+                | "RULE_DRAFT"
+                | "QUERY_RESULT"
+                | "EXECUTION_RESULT"
+                | "PROPOSAL"
+                | "DECISION"
         )
         || response.content.trim().is_empty()
         || response.content.chars().count() > 2_000

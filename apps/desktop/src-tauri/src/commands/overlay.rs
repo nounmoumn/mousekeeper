@@ -580,7 +580,12 @@ pub fn show_speech_bubble(app: tauri::AppHandle, text: String) -> Result<(), Str
     // position; clamping x could move the visible bubble to the other side near an edge.
     let (left_rect, tail_side) = left_candidate;
     let best_rect = if let Some(monitor) = monitor_rect {
-        RectI { y: left_rect.y.clamp(monitor.y, monitor.y + (monitor.h - left_rect.h).max(0)), ..left_rect }
+        RectI {
+            y: left_rect
+                .y
+                .clamp(monitor.y, monitor.y + (monitor.h - left_rect.h).max(0)),
+            ..left_rect
+        }
     } else {
         left_rect
     };

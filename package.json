@@ -5,6 +5,7 @@
   "scripts": {
     "check:contracts": "node scripts/check-openapi-coverage.mjs",
     "e2e:preflight": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/mousekeeper-release-e2e-preflight.ps1",
+    "pretypecheck": "pnpm --filter @mousekeeper/contracts build && pnpm --filter @mousekeeper/database build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "build": "pnpm -r --if-present build"

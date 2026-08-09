@@ -704,7 +704,9 @@ async fn run_background_tick(
         }
         Err(error) => record_busy_skip(status, error),
     }
-    if let Err(error) = crate::agent_tool_processor::process_pending_agent_tools(&agent, &roots).await {
+    if let Err(error) =
+        crate::agent_tool_processor::process_pending_agent_tools(&agent, &roots).await
+    {
         activity.had_error = true;
         update_status(status, |status| status.last_error_message = Some(error));
     }
@@ -984,7 +986,10 @@ fn emit_overlay_activity(app: &tauri::AppHandle, activity: crate::overlay::Overl
 /// with SUCCESS/ERROR/IDLE once execution actually finishes, so this is purely a "still going"
 /// pulse rather than a durable state.
 #[cfg(feature = "tauri-commands")]
-async fn emit_working_if_decisions_pending(app: &tauri::AppHandle, agent: &crate::agent::AgentRuntime) {
+async fn emit_working_if_decisions_pending(
+    app: &tauri::AppHandle,
+    agent: &crate::agent::AgentRuntime,
+) {
     use tauri::Manager;
 
     let Ok(decisions) = agent.pending_decisions().await else {

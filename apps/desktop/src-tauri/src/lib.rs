@@ -1,4 +1,5 @@
 pub mod agent;
+pub mod agent_tool_processor;
 pub mod auto_cleanup_processor;
 pub mod auto_proposal;
 pub mod background;
@@ -9,7 +10,6 @@ pub mod document_extraction;
 pub mod execution_processor;
 pub mod file_browse_processor;
 pub mod file_transfer_processor;
-pub mod agent_tool_processor;
 pub mod outbox_processor;
 pub mod overlay;
 pub mod smart_cache_crypto;
