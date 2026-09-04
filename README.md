@@ -1,5 +1,11 @@
 # MouseKeeper
 
+> **포트폴리오 노트** — 임성진([nounmoumn](https://github.com/nounmoumn)) 담당 부분
+> 2인 팀 · 커밋 97 · **Rust 데스크톱 에이전트 전체**(managed root 안전성, watcher/SQLite 인덱스, proposal·journal·undo)를 담당했습니다.
+
+---
+
+
 자연어로 파일을 찾고, 정리하고, 승인하고, 되돌릴 수 있는 로컬 우선 파일 관리 에이전트입니다. Windows 데스크톱 에이전트가 실제 파일 시스템을 안전하게 다루고, Android 모바일 앱은 같은 서버 room의 채팅·제안·승인·실행 상태를 확인합니다.
 
 ## 1. 프로젝트 개요
